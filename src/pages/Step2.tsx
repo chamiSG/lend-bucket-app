@@ -26,7 +26,7 @@ const Step2 = () => {
   const {
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
       revenue: state?.step2?.revenue || '',
