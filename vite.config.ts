@@ -6,13 +6,13 @@ import vercel from 'vite-plugin-vercel';
 export default defineConfig({
   // plugins: [react()],
   plugins: [react(), vercel()],
-  server: {
-    proxy: {
-      '/api': {
-        target: process.env.VITE_API_HOST || 'http://95.216.84.201:8000',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/api'),
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     '/api': {
+  //       target: process.env.VITE_API_HOST || 'http://95.216.84.201:8000',
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/^\/api/, '/api'),
+  //     },
+  //   },
+  // },
 })

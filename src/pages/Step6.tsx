@@ -21,6 +21,7 @@ import { updateStep6Data, setCurrentStep, setPlaidLinkStatus } from "../state/st
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useEffect } from 'react';
 import PlaidLinkButton from '../components/PlaidLinkButton';
+import axios from '../utils/api';
 
 type FormData = {
   businessName: string;
@@ -98,14 +99,14 @@ const Step6 = () => {
   };
 
   const getInfo = useCallback(async () => {
-    const response = await fetch("/api/info", { method: "POST" });
-    if (!response.ok) {
+    const response = await axios.post("/api/info");
+    if (!response) {
       actions.setPlaidLinkStatus({
         backend: false
       })
       return { paymentInitiation: false };
     }
-    const data = await response.json();
+    const data = await response.data;
     const paymentInitiation: boolean = data.products.includes(
       "payment_initiation"
     );
@@ -121,16 +122,14 @@ const Step6 = () => {
       const path = isPaymentInitiation
         ? "/api/create_link_token_for_payment"
         : "/api/create_link_token";
-      const response = await fetch(path, {
-        method: "POST",
-      });
-      if (!response.ok) {
+      const response = await axios.post(path);
+      if (!response) {
         actions.setPlaidLinkStatus({
           linkToken: null
         })
         return;
       }
-      const data = await response.json();
+      const data = await response.data;
       if (data) {
         if (data.error != null) {
           actions.setPlaidLinkStatus({

@@ -4,6 +4,7 @@ import { usePlaidLink } from "react-plaid-link";
 import { useStateMachine } from "little-state-machine";
 import { setPlaidLinkStatus } from "../state/store";
 import { Button } from "@chakra-ui/react";
+import axios from "../utils/api";
 
 const PlaidLinkButton = () => {
   const { actions, state } = useStateMachine({ setPlaidLinkStatus });
@@ -12,14 +13,13 @@ const PlaidLinkButton = () => {
     (public_token: string) => {
       // If the access_token is needed, send public_token to server
       const exchangePublicTokenForAccessToken = async () => {
-        const response = await fetch("/api/set_access_token", {
-          method: "POST",
+        const response = await axios.post("/api/set_access_token", {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
           },
           body: `public_token=${public_token}`,
         });
-        if (!response.ok) {
+        if (!response) {
           actions.setPlaidLinkStatus({
             itemId: `no item_id retrieved`,
             accessToken: `no access_token retrieved`,
@@ -27,7 +27,7 @@ const PlaidLinkButton = () => {
           })
           return;
         }
-        const data = await response.json();
+        const data = await response.data;
         actions.setPlaidLinkStatus({
           itemId: data.item_id,
           accessToken: data.access_token,
